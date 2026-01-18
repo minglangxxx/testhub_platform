@@ -20,9 +20,29 @@ const routes = [
   },
   {
     path: '/department-manage',
-    name: 'DepartmentManage',
-    component: () => import('@/views/department/DepartmentManage.vue'),
-    meta: { requiresAuth: true }
+    component: Layout,
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        redirect: 'departments'
+      },
+      {
+        path: 'departments',
+        name: 'Departments',
+        component: () => import('@/views/department/DepartmentList.vue')
+      },
+      {
+        path: 'users',
+        name: 'DepartmentUsers',
+        component: () => import('@/views/department/DepartmentUserList.vue')
+      },
+      {
+        path: 'manage',
+        name: 'DepartmentManage',
+        component: () => import('@/views/department/DepartmentManage.vue')
+      }
+    ]
   },
   {
     path: '/login',

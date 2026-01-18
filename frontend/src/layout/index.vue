@@ -95,6 +95,22 @@
             </el-menu-item>
           </template>
 
+          <!-- 部门管理 -->
+          <template v-else-if="currentModule === 'department' || route.path.startsWith('/department-manage')">
+            <el-sub-menu index="department-manage">
+              <template #title>
+                <el-icon><Folder /></el-icon>
+                <span>部门与用户管理</span>
+              </template>
+              <el-menu-item index="/department-manage/departments">
+                部门管理
+              </el-menu-item>
+              <el-menu-item index="/department-manage/users">
+                用户管理
+              </el-menu-item>
+            </el-sub-menu>
+          </template>
+
           <!-- UI自动化测试模块菜单 -->
           <template v-else-if="currentModule === 'ui-automation'">
             <el-menu-item index="/ui-automation/dashboard">
@@ -244,6 +260,7 @@ const currentModule = computed(() => {
   if (route.path.startsWith('/ai-generation')) return 'ai-generation'
   if (route.path.startsWith('/api-testing')) return 'api-testing'
   if (route.path.startsWith('/ui-automation')) return 'ui-automation'
+  if (route.path.startsWith('/department-manage')) return 'department'
   if (route.path.startsWith('/ai-intelligent-mode')) return 'ai-intelligent-mode'
   if (route.path.startsWith('/configuration')) return 'configuration'
   return ''
@@ -254,6 +271,7 @@ const moduleName = computed(() => {
     'ai-generation': 'AI用例生成',
     'api-testing': '接口测试',
     'ui-automation': 'UI自动化测试',
+    'department': '部门与用户管理',
     'ai-intelligent-mode': 'AI 智能模式',
     'configuration': '配置中心'
   }
@@ -314,6 +332,8 @@ const breadcrumbTitle = computed(() => {
     
     '/profile': '个人设置'
   }
+  // 部门管理主页
+  routeMap['/department-manage'] = '部门与用户管理'
   return routeMap[route.path] || route.meta.title || ''
 })
 

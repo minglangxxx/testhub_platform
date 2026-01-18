@@ -126,7 +126,7 @@ const handleNavigate = (type) => {
     'ai-intelligent': '/ai-intelligent-mode/testing',
     'assistant': '/ai-generation/assistant',
     'config': '/configuration/ai-model',
-    'department': '/department-manage'
+    'department': '/department-manage/departments'
   }
 
   if (type === 'data') {

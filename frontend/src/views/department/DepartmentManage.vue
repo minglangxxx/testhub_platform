@@ -6,32 +6,15 @@
     </div>
 
     <div class="content-card">
-      <el-tabs v-model="active" tab-position="left" class="department-tabs">
-        <el-tab-pane label="部门管理" name="departments">
-          <div class="card-body">
-            <DepartmentList />
-          </div>
-        </el-tab-pane>
-        <el-tab-pane label="用户管理" name="users">
-          <div class="card-body">
-            <DepartmentUserList />
-          </div>
-        </el-tab-pane>
-      </el-tabs>
+      <div class="card-body">
+        <router-view />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import DepartmentList from '@/views/department/DepartmentList.vue'
-import DepartmentUserList from '@/views/department/DepartmentUserList.vue'
-
-const active = ref('departments')
-
-const handleSelect = (index) => {
-  active.value = index
-}
+// 组件现在通过路由的子路由渲染 DepartmentList / DepartmentUserList
 </script>
 
 <style scoped>
