@@ -1,8 +1,11 @@
 <template>
   <div class="layout">
     <el-container>
-      <!-- 侧边栏 -->
-      <el-aside width="240px">
+      <!-- 最左侧功能图标栏 -->
+      <HomeSider />
+
+      <!-- 主侧边栏 -->
+      <el-aside class="main-aside" width="240px">
         <div class="logo" @click="router.push('/home')" style="cursor: pointer;">
           <h2>TestHub</h2>
         </div>
@@ -251,6 +254,7 @@ import {
   DataAnalysis, ChatDotRound, DocumentCopy, Link, MagicStick,
   Odometer, Timer, Setting, AlarmClock, Bell, Aim, Edit, Cpu
 } from '@element-plus/icons-vue'
+import HomeSider from '@/components/HomeSider.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -377,7 +381,7 @@ const handleCommand = (command) => {
   }
 }
 
-.el-aside {
+.main-aside {
   background-color: #001529;
   height: 100%;
   display: flex;
@@ -397,6 +401,12 @@ const handleCommand = (command) => {
     }
   }
 }
+
+/* 使用 HomeSider 的 border-right 作为分隔，确保父容器背景透明以消除白缝隙 */
+.layout > .el-container {
+  background: transparent;
+}
+
 
 .el-menu {
   :deep(.el-sub-menu__title),

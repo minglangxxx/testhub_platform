@@ -214,10 +214,10 @@ const handleLogin = async () => {
         })
 
         ElMessage.success('登录成功')
-        console.log('准备跳转到 /home')
+        console.log('准备跳转到 /')
 
         // 使用replace而不是push，避免返回登录页
-        await router.replace('/home')
+        await router.replace('/')
         console.log('跳转完成')
 
       } catch (error) {

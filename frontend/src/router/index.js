@@ -10,7 +10,7 @@ import ProjectList from '@/views/projects/ProjectList.vue'
 const routes = [
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/ai-generation/requirement-analysis'
   },
   {
     path: '/home',
