@@ -27,9 +27,9 @@
         <el-tab-pane label="项目成员" name="members">
           <div class="members-section">
             <el-button type="primary" @click="showAddMemberDialog = true">添加成员</el-button>
-            <el-table :data="project?.members || []" style="width: 100%; margin-top: 20px;">
-              <el-table-column prop="user.username" label="用户名" />
-              <el-table-column prop="user.email" label="邮箱" />
+            <el-table :data="members" style="width: 100%; margin-top: 20px;">
+              <el-table-column prop="username" label="用户名" />
+              <el-table-column prop="email" label="邮箱" />
               <el-table-column prop="role" label="角色" />
               <el-table-column prop="joined_at" label="加入时间">
                 <template #default="{ row }">
@@ -44,11 +44,30 @@
             </el-table>
           </div>
         </el-tab-pane>
+
+        <!-- 添加成员对话框 -->
+        <el-dialog title="添加成员" v-model="showAddMemberDialog" width="500px">
+          <el-form :model="newMember">
+            <el-form-item label="用户ID" prop="user_id">
+              <el-input v-model="newMember.user_id" placeholder="输入用户ID" />
+            </el-form-item>
+            <el-form-item label="角色" prop="role">
+              <el-select v-model="newMember.role" placeholder="选择角色">
+                <el-option label="成员" value="member" />
+                <el-option label="管理员" value="admin" />
+              </el-select>
+            </el-form-item>
+          </el-form>
+          <template #footer>
+            <el-button @click="showAddMemberDialog = false">取消</el-button>
+            <el-button type="primary" @click="addMember">添加</el-button>
+          </template>
+        </el-dialog>
         
         <el-tab-pane label="环境配置" name="environments">
           <div class="environments-section">
             <el-button type="primary" @click="showAddEnvDialog = true">添加环境</el-button>
-            <el-table :data="project?.environments || []" style="width: 100%; margin-top: 20px;">
+            <el-table :data="environments" style="width: 100%; margin-top: 20px;">
               <el-table-column prop="name" label="环境名称" />
               <el-table-column prop="base_url" label="基础URL" />
               <el-table-column prop="description" label="描述" />
@@ -61,6 +80,28 @@
             </el-table>
           </div>
         </el-tab-pane>
+
+        <!-- 添加环境对话框 -->
+        <el-dialog title="添加环境" v-model="showAddEnvDialog" width="600px">
+          <el-form :model="newEnv">
+            <el-form-item label="环境名称" prop="name">
+              <el-input v-model="newEnv.name" />
+            </el-form-item>
+            <el-form-item label="基础URL" prop="base_url">
+              <el-input v-model="newEnv.base_url" />
+            </el-form-item>
+            <el-form-item label="描述" prop="description">
+              <el-input type="textarea" v-model="newEnv.description" />
+            </el-form-item>
+            <el-form-item label="默认环境" prop="is_default">
+              <el-switch v-model="newEnv.is_default" />
+            </el-form-item>
+          </el-form>
+          <template #footer>
+            <el-button @click="showAddEnvDialog = false">取消</el-button>
+            <el-button type="primary" @click="addEnvironment">添加</el-button>
+          </template>
+        </el-dialog>
       </el-tabs>
     </div>
   </div>
@@ -75,14 +116,21 @@ import dayjs from 'dayjs'
 
 const route = useRoute()
 const project = ref(null)
+const members = ref([])
+const environments = ref([])
 const activeTab = ref('info')
 const showAddMemberDialog = ref(false)
 const showAddEnvDialog = ref(false)
+
+const newMember = ref({ user_id: null, role: 'member' })
+const newEnv = ref({ name: '', base_url: '', description: '', is_default: false })
 
 const fetchProject = async () => {
   try {
     const response = await api.get(`/projects/${route.params.id}/`)
     project.value = response.data
+    await fetchMembers()
+    await fetchEnvironments()
   } catch (error) {
     ElMessage.error('获取项目详情失败')
   }
@@ -116,9 +164,51 @@ const removeMember = async (member) => {
   try {
     await api.delete(`/projects/${route.params.id}/members/${member.id}/`)
     ElMessage.success('成员删除成功')
-    fetchProject()
+    await fetchMembers()
   } catch (error) {
     ElMessage.error('删除成员失败')
+  }
+}
+
+const fetchMembers = async () => {
+  try {
+    const response = await api.get(`/projects/${route.params.id}/members/`)
+    members.value = response.data
+  } catch (error) {
+    ElMessage.error('获取项目成员失败')
+  }
+}
+
+const addMember = async () => {
+  try {
+    await api.post(`/projects/${route.params.id}/members/add/`, newMember.value)
+    ElMessage.success('添加成员成功')
+    showAddMemberDialog.value = false
+    newMember.value = { user_id: null, role: 'member' }
+    await fetchMembers()
+  } catch (error) {
+    ElMessage.error('添加成员失败')
+  }
+}
+
+const fetchEnvironments = async () => {
+  try {
+    const response = await api.get(`/projects/${route.params.id}/environments/`)
+    environments.value = response.data.results || response.data
+  } catch (error) {
+    ElMessage.error('获取环境列表失败')
+  }
+}
+
+const addEnvironment = async () => {
+  try {
+    await api.post(`/projects/${route.params.id}/environments/`, newEnv.value)
+    ElMessage.success('环境添加成功')
+    showAddEnvDialog.value = false
+    newEnv.value = { name: '', base_url: '', description: '', is_default: false }
+    await fetchEnvironments()
+  } catch (error) {
+    ElMessage.error('添加环境失败')
   }
 }
 

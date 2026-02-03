@@ -3,6 +3,8 @@ from django.utils import timezone
 from apps.users.models import User
 from apps.projects.models import Project
 from apps.executions.models import TestRun
+from apps.tasks.models import Task
+
 
 class TestReport(models.Model):
     """测试报告"""
@@ -40,3 +42,25 @@ class ReportTemplate(models.Model):
         db_table = 'report_templates'
         verbose_name = '报告模板'
         verbose_name_plural = '报告模板'
+
+
+class Report(models.Model):
+    id = models.CharField(max_length=64, primary_key=True)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='agent_reports', db_index=True)
+    report_path = models.CharField(max_length=512)
+    summary = models.JSONField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Report for task {self.task.id}"
+
+class Attachment(models.Model):
+    id = models.CharField(max_length=64, primary_key=True)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='attachments', db_index=True)
+    file_name = models.CharField(max_length=256)
+    file_path = models.CharField(max_length=512)
+    file_size = models.BigIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.file_name

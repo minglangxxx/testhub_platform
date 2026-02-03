@@ -101,10 +101,12 @@ def get_project_members(request, project_id):
 def remove_project_member(request, project_id, member_id):
     try:
         project = Project.objects.get(id=project_id)
+        print("project_id============", project_id)
         if project.owner != request.user:
             return Response({'error': '无权限删除成员'}, status=status.HTTP_403_FORBIDDEN)
         
-        member = ProjectMember.objects.get(id=member_id, project=project)
+        member = ProjectMember.objects.get(user=member_id, project=project)
+        print("member========", member)
         member.delete()
         return Response({'message': '成员删除成功'})
     except (Project.DoesNotExist, ProjectMember.DoesNotExist):

@@ -11,6 +11,9 @@
             <el-form-item label="用户名">
               <el-input v-model="userStore.user.username" disabled />
             </el-form-item>
+          <el-form-item label="用户ID">
+              <el-input v-model="userStore.user.id" disabled />
+          </el-form-item>
             <el-form-item label="邮箱">
               <el-input v-model="userStore.user.email" />
             </el-form-item>
@@ -18,7 +21,7 @@
               <el-input v-model="userStore.user.first_name" />
             </el-form-item>
             <el-form-item label="部门">
-              <el-input v-model="userStore.user.department" />
+              <el-input v-model="userStore.user.department_display[0].name" />
             </el-form-item>
             <el-form-item label="职位">
               <el-input v-model="userStore.user.position" />

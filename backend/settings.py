@@ -51,6 +51,8 @@ LOCAL_APPS = [
     'apps.api_testing',
     'apps.ui_automation.apps.UiAutomationConfig',
     'apps.core',
+    'apps.agents',
+    'apps.tasks',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

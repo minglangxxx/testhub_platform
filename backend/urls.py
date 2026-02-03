@@ -29,6 +29,8 @@ urlpatterns = [
     path('api/ui-automation/', include('apps.ui_automation.urls')),
     path('api/', include('apps.api_testing.urls')),
     path('api/core/', include('apps.core.urls')),
+    path('api/', include('apps.agents.urls')),
+    path('api/', include('apps.tasks.urls')),
 ]
 
 if settings.DEBUG:

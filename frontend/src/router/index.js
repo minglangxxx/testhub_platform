@@ -176,6 +176,26 @@ const routes = [
         path: 'profile',
         name: 'Profile',
         component: () => import('@/views/profile/UserProfile.vue')
+      },
+      {
+        path: 'agents',
+        name: 'AgentManagement',
+        component: () => import('@/views/agent/AgentManagement.vue')
+      },
+      {
+        path: 'tasks',
+        name: 'TaskList',
+        component: () => import('@/views/task/TaskList.vue')
+      },
+      {
+        path: 'tasks/create',
+        name: 'TaskCreate',
+        component: () => import('@/views/task/TaskCreate.vue')
+      },
+      {
+        path: 'tasks/:id/logs',
+        name: 'TaskLogs',
+        component: () => import('@/views/task/TaskLogs.vue')
       }
     ]
   },

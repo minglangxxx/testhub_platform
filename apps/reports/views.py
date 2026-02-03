@@ -5,10 +5,15 @@ from django.db.models import Count, Q, Sum, F, Avg
 from django.db.models.functions import TruncDate, Length
 from django.utils import timezone
 from datetime import timedelta, datetime
-from .models import TestReport, ReportTemplate
+from .models import TestReport, ReportTemplate, Report, Attachment
 from apps.executions.models import TestPlan, TestRun, TestRunCase
 from apps.testcases.models import TestCase
 from apps.requirement_analysis.models import RequirementAnalysis, GeneratedTestCase, BusinessRequirement
+from .serializers import TestReportSerializer, ReportTemplateSerializer, AgentReportSerializer, AttachmentSerializer
+import os
+import zipfile
+from django.conf import settings
+import uuid
 
 class TestReportViewSet(viewsets.ModelViewSet):
     """测试报告视图集"""
@@ -270,3 +275,66 @@ class TestReportViewSet(viewsets.ModelViewSet):
             })
             
         return Response(result)
+
+class AgentReportViewSet(viewsets.ModelViewSet):
+    queryset = Report.objects.all()
+    serializer_class = AgentReportSerializer
+    lookup_field = 'id'
+
+    @action(detail=False, methods=['post'], url_path='tasks/(?P<task_id>[^/.]+)/report')
+    def upload_report(self, request, task_id=None):
+        report_file = request.FILES.get('report')
+        attachments = request.FILES.getlist('attachments')
+
+        if not report_file:
+            return Response({"error": "Report file is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create a unique directory for this task's report
+        report_dir = os.path.join(settings.MEDIA_ROOT, 'allure-reports', task_id)
+        os.makedirs(report_dir, exist_ok=True)
+
+        # Save and extract the Allure report
+        report_zip_path = os.path.join(report_dir, report_file.name)
+        with open(report_zip_path, 'wb+') as destination:
+            for chunk in report_file.chunks():
+                destination.write(chunk)
+        
+        # Assuming the zip contains the Allure report, extract it
+        with zipfile.ZipFile(report_zip_path, 'r') as zip_ref:
+            zip_ref.extractall(report_dir)
+        
+        # Create Report record
+        report_path = os.path.join(settings.MEDIA_URL, 'allure-reports', task_id)
+        report = Report.objects.create(
+            id=str(uuid.uuid4()),
+            task_id=task_id,
+            report_path=report_path,
+            # Summary could be extracted from allure results later
+            summary={"status": "generated"} 
+        )
+
+        # Handle attachments
+        for attachment_file in attachments:
+            attachment_path = os.path.join(report_dir, 'attachments')
+            os.makedirs(attachment_path, exist_ok=True)
+            
+            file_path = os.path.join(attachment_path, attachment_file.name)
+            with open(file_path, 'wb+') as dest:
+                for chunk in attachment_file.chunks():
+                    dest.write(chunk)
+            
+            Attachment.objects.create(
+                id=str(uuid.uuid4()),
+                task_id=task_id,
+                file_name=attachment_file.name,
+                file_path=os.path.join(settings.MEDIA_URL, 'allure-reports', task_id, 'attachments', attachment_file.name),
+                file_size=attachment_file.size
+            )
+
+        return Response(ReportSerializer(report).data, status=status.HTTP_201_CREATED)
+
+    @action(detail=False, methods=['get'], url_path='tasks/(?P<task_id>[^/.]+)/reports')
+    def list_reports(self, request, task_id=None):
+        reports = Report.objects.filter(task_id=task_id)
+        serializer = self.get_serializer(reports, many=True)
+        return Response(serializer.data)

@@ -78,6 +78,14 @@
           <h3>配置中心</h3>
           <p>系统环境、AI模型及通知配置</p>
         </div>
+        <!-- Agent管理 -->
+        <div class="nav-card" @click="handleNavigate('agent')" role="button" tabindex="0">
+          <div class="card-icon agent-icon">
+            <el-icon><Connection /></el-icon>
+          </div>
+          <h3>Agent管理</h3>
+          <p>Agent节点与任务管理</p>
+        </div>
         <!-- 部门与用户管理 -->
         <div class="nav-card" @click="handleNavigate('department')" role="button" tabindex="0">
           <div class="card-icon config-icon">
@@ -95,7 +103,7 @@
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { MagicStick, Link, Monitor, DataLine, Cpu, Setting, ChatDotRound, UserFilled, ArrowDown } from '@element-plus/icons-vue'
+import { MagicStick, Link, Monitor, DataLine, Cpu, Setting, ChatDotRound, UserFilled, ArrowDown, Connection } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -126,6 +134,7 @@ const handleNavigate = (type) => {
     'ai-intelligent': '/ai-intelligent-mode/testing',
     'assistant': '/ai-generation/assistant',
     'config': '/configuration/ai-model',
+    'agent': '/ai-generation/agents',
     'department': '/department-manage/departments'
   }
 
@@ -277,6 +286,11 @@ const handleNavigate = (type) => {
   &.assistant-icon {
     background: #fff7e6;
     color: #fa8c16;
+  }
+
+  &.agent-icon {
+    background: #f9f0ff;
+    color: #722ed1;
   }
 }
 

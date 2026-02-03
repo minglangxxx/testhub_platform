@@ -97,6 +97,22 @@
             </el-menu-item>
           </template>
 
+          <!-- Agent管理 -->
+          <template v-else-if="currentModule === 'agent' || route.path.startsWith('/ai-generation/agents') || route.path.startsWith('/ai-generation/tasks')">
+            <el-sub-menu index="agent-manage">
+              <template #title>
+                <el-icon><Connection /></el-icon>
+                <span>Agent管理</span>
+              </template>
+              <el-menu-item index="/ai-generation/agents">
+                节点管理
+              </el-menu-item>
+              <el-menu-item index="/ai-generation/tasks">
+                任务管理
+              </el-menu-item>
+            </el-sub-menu>
+          </template>
+
           <!-- 部门管理 -->
           <template v-else-if="currentModule === 'department' || route.path.startsWith('/department-manage')">
             <el-sub-menu index="department-manage">
@@ -265,7 +281,7 @@ import { ElMessage } from 'element-plus'
 import { 
   Monitor, Folder, Document, Flag, Check, Collection, VideoPlay, 
   DataAnalysis, ChatDotRound, DocumentCopy, Link, MagicStick,
-  Odometer, Timer, Setting, AlarmClock, Bell, Aim, Edit, Cpu
+  Odometer, Timer, Setting, AlarmClock, Bell, Aim, Edit, Cpu, Connection
 } from '@element-plus/icons-vue'
 import HomeSider from '@/components/HomeSider.vue'
 
@@ -274,6 +290,7 @@ const route = useRoute()
 const userStore = useUserStore()
 
 const currentModule = computed(() => {
+  if (route.path.startsWith('/ai-generation/agents') || route.path.startsWith('/ai-generation/tasks')) return 'agent'
   if (route.path.startsWith('/ai-generation')) return 'ai-generation'
   if (route.path.startsWith('/api-testing')) return 'api-testing'
   if (route.path.startsWith('/ui-automation')) return 'ui-automation'
@@ -289,6 +306,7 @@ const moduleName = computed(() => {
     'api-testing': '接口测试',
     'ui-automation': 'UI自动化测试',
     'department': '部门与用户管理',
+    'agent': 'Agent管理',
     'ai-intelligent-mode': 'AI 智能模式',
     'configuration': '配置中心'
   }
@@ -309,6 +327,8 @@ const breadcrumbTitle = computed(() => {
     '/ai-generation/testsuites': '测试套件',
     '/ai-generation/executions': '执行记录',
     '/ai-generation/reports': '测试报告',
+    '/ai-generation/agents': '节点管理',
+    '/ai-generation/tasks': '任务管理',
     
     // 接口测试
     '/api-testing/dashboard': '数据看板',

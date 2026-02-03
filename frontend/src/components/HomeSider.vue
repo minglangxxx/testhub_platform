@@ -43,6 +43,12 @@
           </el-tooltip>
         </el-menu-item>
 
+        <el-menu-item index="/ai-generation/agents" @click="setModule('agent')">
+          <el-tooltip content="Agent管理" placement="right">
+            <el-icon><Connection /></el-icon>
+          </el-tooltip>
+        </el-menu-item>
+
         <el-menu-item index="/department-manage/departments" @click="setModule('department')">
           <el-tooltip content="部门与用户管理" placement="right">
             <el-icon><UserFilled /></el-icon>
@@ -61,7 +67,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { MagicStick, Link, Monitor, Setting, Cpu, ChatDotRound, UserFilled, Odometer } from '@element-plus/icons-vue'
+import { MagicStick, Link, Monitor, Setting, Cpu, ChatDotRound, UserFilled, Odometer, Connection } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 
