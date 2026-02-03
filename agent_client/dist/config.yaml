@@ -1,0 +1,17 @@
+agent:
+  id: agent-DESKTOP-R7EUO2S-2657E9
+  tags:
+  - default
+  workspace: C:\Users\54121\testhub_agent\workspace
+git:
+  token: ''
+heartbeat:
+  interval: 30
+logging:
+  filename: agent.log
+  level: INFO
+  path: C:\Users\54121\testhub_agent\logs
+platform:
+  url: http://127.0.0.1:8000
+task_polling:
+  interval: 5

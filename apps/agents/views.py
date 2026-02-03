@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
 from django.utils import timezone
 from .models import Agent, Tag
 from .serializers import AgentSerializer, TagSerializer, AgentHeartbeatSerializer
@@ -10,7 +11,7 @@ class AgentViewSet(viewsets.ModelViewSet):
     serializer_class = AgentSerializer
     lookup_field = 'id'
 
-    @action(detail=False, methods=['post'], url_path='register')
+    @action(detail=False, methods=['post'], url_path='register', permission_classes=[AllowAny])
     def register(self, request):
         agent_id = request.data.get('agent_id')
         if not agent_id:
@@ -25,7 +26,7 @@ class AgentViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
 
-    @action(detail=False, methods=['post'], url_path='heartbeat')
+    @action(detail=False, methods=['post'], url_path='heartbeat', permission_classes=[AllowAny])
     def heartbeat(self, request):
         serializer = AgentHeartbeatSerializer(data=request.data)
         if not serializer.is_valid():

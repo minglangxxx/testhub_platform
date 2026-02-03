@@ -13,6 +13,7 @@ class Agent(models.Model):
         ('online', 'Online'),
         ('offline', 'Offline'),
         ('busy', 'Busy'),
+        ('idle', 'Idle'),
     ]
     id = models.CharField(max_length=64, primary_key=True)
     name = models.CharField(max_length=128, blank=True, null=True)

@@ -1,6 +1,7 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets, permissions, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 from django.db.models import Count, Q, Sum, F, Avg
 from django.db.models.functions import TruncDate, Length
 from django.utils import timezone
@@ -281,7 +282,7 @@ class AgentReportViewSet(viewsets.ModelViewSet):
     serializer_class = AgentReportSerializer
     lookup_field = 'id'
 
-    @action(detail=False, methods=['post'], url_path='tasks/(?P<task_id>[^/.]+)/report')
+    @action(detail=False, methods=['post'], url_path='tasks/(?P<task_id>[^/.]+)/report', permission_classes=[AllowAny])
     def upload_report(self, request, task_id=None):
         report_file = request.FILES.get('report')
         attachments = request.FILES.getlist('attachments')

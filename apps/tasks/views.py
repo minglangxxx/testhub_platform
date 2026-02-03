@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
 from django.utils import timezone
 import uuid
 
@@ -32,7 +33,7 @@ class TaskViewSet(viewsets.ModelViewSet):
                 TASK_QUEUE['any'] = []
             TASK_QUEUE['any'].append(task)
 
-    @action(detail=False, methods=['get'], url_path='poll')
+    @action(detail=False, methods=['get'], url_path='poll', permission_classes=[AllowAny])
     def poll(self, request):
         agent_id = request.query_params.get('agent_id')
         if not agent_id:
@@ -58,7 +59,7 @@ class TaskViewSet(viewsets.ModelViewSet):
 
         return Response({"message": "No pending tasks"}, status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=['post'], url_path='status')
+    @action(detail=True, methods=['post'], url_path='status', permission_classes=[AllowAny])
     def update_status(self, request, id=None):
         task = self.get_object()
         serializer = TaskStatusUpdateSerializer(data=request.data)
@@ -75,7 +76,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         
         return Response(TaskSerializer(task).data)
 
-    @action(detail=True, methods=['post'], url_path='log')
+    @action(detail=True, methods=['post'], url_path='log', permission_classes=[AllowAny])
     def add_log(self, request, id=None):
         task = self.get_object()
         serializer = TaskLogCreateSerializer(data=request.data)

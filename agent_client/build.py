@@ -35,8 +35,9 @@ def build():
     ]
 
     # Add platform-specific options if needed
-    if platform.system() == "Windows":
-        pyinstaller_command.append("--icon=assets/icon.ico") # Example for icon
+    # Note: Icon support removed - create a valid .ico file in assets/ folder to re-enable
+    # if platform.system() == "Windows":
+    #     pyinstaller_command.append("--icon=assets/icon.ico")
     
     print(f"Running PyInstaller command: {' '.join(pyinstaller_command)}")
     
@@ -63,21 +64,14 @@ def build():
         print(f"Default '{CONFIG_FILE}' created in '{dist_path}'.")
 
     # 4. Create a simple distribution package (optional)
-    print("Creating a distribution package...")
-    package_name = f"{APP_NAME}-{platform.system().lower()}-{platform.machine()}"
-    shutil.make_archive(os.path.join(DIST_DIR, package_name), 'zip', dist_path)
+    # print("Creating a distribution package...")
+    # package_name = f"{APP_NAME}-{platform.system().lower()}-{platform.machine()}"
+    # shutil.make_archive(os.path.join(DIST_DIR, package_name), 'zip', dist_path)
     
     print("\nBuild process finished!")
-    print(f"Executable created at: {os.path.join(dist_path, APP_NAME)}")
-    print(f"Distribution package: {os.path.join(DIST_DIR, package_name + '.zip')}")
+    print(f"Executable created at: {os.path.join(dist_path, APP_NAME + '.exe')}")
+    print(f"Config file created at: {os.path.join(dist_path, CONFIG_FILE)}")
+    # print(f"Distribution package: {os.path.join(DIST_DIR, package_name + '.zip')}")
 
 if __name__ == "__main__":
-    # Create dummy assets if they don't exist (for icon example)
-    if not os.path.exists("assets"):
-        os.makedirs("assets")
-    if not os.path.exists("assets/icon.ico"):
-        # Create a dummy file, replace with your actual icon
-        with open("assets/icon.ico", "w") as f:
-            pass
-
     build()
